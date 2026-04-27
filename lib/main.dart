@@ -14,16 +14,18 @@ class MyApp extends StatelessWidget {
       title: 'Horof',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF9C27B0), // Vibrant purple
-          brightness: Brightness.light,
-        ),
         useMaterial3: true,
-        fontFamily: 'Roboto', // Default fallback
+        fontFamily: 'Roboto', // Fallback, but we use heavy weights
       ),
       home: const HorofHomePage(),
     );
   }
+}
+
+class CardColorSet {
+  final Color base;
+  final Color shadow;
+  CardColorSet(this.base, this.shadow);
 }
 
 class HorofHomePage extends StatefulWidget {
@@ -34,7 +36,7 @@ class HorofHomePage extends StatefulWidget {
 }
 
 class _HorofHomePageState extends State<HorofHomePage> {
-  // 28 Arabic Alphabets
+  // 30 Arabic Alphabets
   final List<Map<String, String>> arabicAlphabets = [
     {'ar': 'ا', 'bn': 'আলিফ'},
     {'ar': 'ب', 'bn': 'বা'},
@@ -68,63 +70,103 @@ class _HorofHomePageState extends State<HorofHomePage> {
     {'ar': 'ي', 'bn': 'ইয়া'},
   ];
 
-  // A playful color palette for the cards
-  final List<Color> cardColors = [
-    Colors.red.shade400,
-    Colors.green.shade400,
-    Colors.blue.shade400,
-    Colors.orange.shade400,
-    Colors.purple.shade400,
-    Colors.teal.shade400,
-    Colors.pink.shade400,
-    Colors.amber.shade500,
-    Colors.cyan.shade400,
-    Colors.indigo.shade400,
+  // Super vibrant color palette with dark shadows for 3D effect
+  final List<CardColorSet> cardColors = [
+    CardColorSet(const Color(0xFFFF6B6B), const Color(0xFFC92A2A)), // Red
+    CardColorSet(const Color(0xFF4ECDC4), const Color(0xFF0B7285)), // Teal
+    CardColorSet(const Color(0xFFFFD166), const Color(0xFFE67700)), // Yellow
+    CardColorSet(const Color(0xFF118AB2), const Color(0xFF073B4C)), // Blue
+    CardColorSet(const Color(0xFF9D4EDD), const Color(0xFF5A189A)), // Purple
+    CardColorSet(const Color(0xFF06D6A0), const Color(0xFF028090)), // Green
+    CardColorSet(const Color(0xFFFF9F1C), const Color(0xFFD62828)), // Orange
+    CardColorSet(const Color(0xFFEF476F), const Color(0xFF9E0059)), // Pink
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      appBar: AppBar(
-        title: const Text(
-          'Horof - আরবি হরফ',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFE0F7FA), Color(0xFFF3E5F5)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
         ),
-        centerTitle: true,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
-        elevation: 4,
-        shadowColor: Colors.black26,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Playful Custom Header
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(0, 4),
+                        blurRadius: 10,
+                      )
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Icon(Icons.star_rounded, color: Color(0xFFFFD166), size: 36),
+                      SizedBox(width: 12),
+                      Text(
+                        'Horof - আরবি হরফ',
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFF5A189A),
+                          letterSpacing: 1.0,
+                        ),
+                      ),
+                      SizedBox(width: 12),
+                      Icon(Icons.star_rounded, color: Color(0xFFFFD166), size: 36),
+                    ],
+                  ),
+                ),
+              ),
+              
+              // Grid View
+              Expanded(
+                child: Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: GridView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 180,
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 24, // Extra main axis spacing for the 3D pop
+                        childAspectRatio: 0.8,
+                      ),
+                      itemCount: arabicAlphabets.length,
+                      itemBuilder: (context, index) {
+                        final alphabet = arabicAlphabets[index];
+                        final colorSet = cardColors[index % cardColors.length];
+                        return AlphabetCard(
+                          index: index,
+                          alphabet: alphabet['ar']!,
+                          pronunciation: alphabet['bn']!,
+                          color: colorSet.base,
+                          shadowColor: colorSet.shadow,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-      body: Directionality(
-        textDirection: TextDirection.rtl,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
-          child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 180,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              childAspectRatio: 0.85,
-            ),
-          itemCount: arabicAlphabets.length,
-          itemBuilder: (context, index) {
-            final alphabet = arabicAlphabets[index];
-            final color = cardColors[index % cardColors.length];
-            return AlphabetCard(
-              index: index,
-              alphabet: alphabet['ar']!,
-              pronunciation: alphabet['bn']!,
-              color: color,
-            );
-          },
-        ),
-      ),
-      ), // Close Directionality
     );
   }
 }
@@ -134,6 +176,7 @@ class AlphabetCard extends StatefulWidget {
   final String alphabet;
   final String pronunciation;
   final Color color;
+  final Color shadowColor;
 
   const AlphabetCard({
     super.key,
@@ -141,36 +184,33 @@ class AlphabetCard extends StatefulWidget {
     required this.alphabet,
     required this.pronunciation,
     required this.color,
+    required this.shadowColor,
   });
 
   @override
   State<AlphabetCard> createState() => _AlphabetCardState();
 }
 
-class _AlphabetCardState extends State<AlphabetCard> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
+class _AlphabetCardState extends State<AlphabetCard> {
+  bool _isPressed = false;
   final AudioPlayer _audioPlayer = AudioPlayer();
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 150),
-    );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.9).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+  void _handleTapDown(TapDownDetails details) {
+    setState(() => _isPressed = true);
   }
 
-  void _handleTap() async {
-    // Play bounce animation
-    await _controller.forward();
-    _controller.reverse();
+  void _handleTapUp(TapUpDetails details) async {
+    setState(() => _isPressed = false);
+    _playSound();
+  }
 
+  void _handleTapCancel() {
+    setState(() => _isPressed = false);
+  }
+
+  void _playSound() async {
     try {
-      // Play audio from local asset for offline use
+      // Create a new instance for rapid tapping, or reuse existing one
       await _audioPlayer.play(AssetSource('audio/letter_${widget.index}.mp3'));
     } catch (e) {
       print("Audio Error: $e");
@@ -179,7 +219,6 @@ class _AlphabetCardState extends State<AlphabetCard> with SingleTickerProviderSt
 
   @override
   void dispose() {
-    _controller.dispose();
     _audioPlayer.dispose();
     super.dispose();
   }
@@ -187,65 +226,74 @@ class _AlphabetCardState extends State<AlphabetCard> with SingleTickerProviderSt
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: _handleTap,
-      child: ScaleTransition(
-        scale: _scaleAnimation,
-        child: Container(
-          decoration: BoxDecoration(
-            color: widget.color,
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: widget.color.withValues(alpha: 0.4),
-                blurRadius: 10,
-                offset: const Offset(0, 6),
-              ),
-              const BoxShadow(
-                color: Colors.white24,
-                blurRadius: 4,
-                offset: Offset(-2, -2),
-              ),
-            ],
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                widget.color.withValues(alpha: 0.8),
-                widget.color,
-              ],
-            ),
+      onTapDown: _handleTapDown,
+      onTapUp: _handleTapUp,
+      onTapCancel: _handleTapCancel,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeOut,
+        margin: EdgeInsets.only(top: _isPressed ? 8.0 : 0.0),
+        decoration: BoxDecoration(
+          color: widget.color,
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.3),
+            width: 3,
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                widget.alphabet,
-                style: const TextStyle(
-                  fontSize: 64,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  height: 1.2,
-                ),
-                textDirection: TextDirection.rtl,
-              ),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.25),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  widget.pronunciation,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
+          boxShadow: _isPressed
+              ? [] // Shadow disappears when pressed
+              : [
+                  BoxShadow(
+                    color: widget.shadowColor,
+                    offset: const Offset(0, 8),
+                    blurRadius: 0, // Solid shadow for 3D effect
                   ),
+                ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              widget.alphabet,
+              style: const TextStyle(
+                fontSize: 64,
+                fontWeight: FontWeight.w900,
+                color: Colors.white,
+                height: 1.1,
+                shadows: [
+                  Shadow(
+                    color: Colors.black26,
+                    offset: Offset(0, 3),
+                    blurRadius: 4,
+                  ),
+                ],
+              ),
+              textDirection: TextDirection.rtl,
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black12,
+                    offset: Offset(0, 2),
+                    blurRadius: 2,
+                  )
+                ],
+              ),
+              child: Text(
+                widget.pronunciation,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: widget.shadowColor, // Harmonize text with the card's 3D shadow
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
