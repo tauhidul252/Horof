@@ -142,10 +142,10 @@ class _HorofHomePageState extends State<HorofHomePage> {
                     child: GridView.builder(
                       physics: const BouncingScrollPhysics(),
                       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 180,
-                        crossAxisSpacing: 20,
-                        mainAxisSpacing: 24, // Extra main axis spacing for the 3D pop
-                        childAspectRatio: 0.8,
+                        maxCrossAxisExtent: 130,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 20, // Extra main axis spacing for the 3D pop
+                        childAspectRatio: 0.85,
                       ),
                       itemCount: arabicAlphabets.length,
                       itemBuilder: (context, index) {
@@ -256,7 +256,7 @@ class _AlphabetCardState extends State<AlphabetCard> {
             Text(
               widget.alphabet,
               style: const TextStyle(
-                fontSize: 64,
+                fontSize: 48,
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
                 height: 1.1,
@@ -272,7 +272,8 @@ class _AlphabetCardState extends State<AlphabetCard> {
             ),
             const SizedBox(height: 12),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              margin: const EdgeInsets.symmetric(horizontal: 8),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
@@ -284,12 +285,16 @@ class _AlphabetCardState extends State<AlphabetCard> {
                   )
                 ],
               ),
-              child: Text(
-                widget.pronunciation,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: widget.shadowColor, // Harmonize text with the card's 3D shadow
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  widget.pronunciation,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: widget.shadowColor, // Harmonize text with the card's 3D shadow
+                  ),
                 ),
               ),
             ),
