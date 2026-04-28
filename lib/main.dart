@@ -90,12 +90,37 @@ class _HorofHomePageState extends State<HorofHomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Future<void> _rateApp() async {
-    if (kIsWeb) return; // in_app_review is not supported on web
-    final inAppReview = InAppReview.instance;
-    if (await inAppReview.isAvailable()) {
-      await inAppReview.requestReview();
-    } else {
-      await inAppReview.openStoreListing(appStoreId: '');
+    final isBangla = appLanguageBangla.value;
+    try {
+      final inAppReview = InAppReview.instance;
+      if (await inAppReview.isAvailable()) {
+        await inAppReview.requestReview();
+      } else {
+        await inAppReview.openStoreListing();
+      }
+    } catch (e) {
+      if (!mounted) return;
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Text(
+            isBangla ? 'শীঘ্রই আসছে' : 'Coming Soon',
+            style: const TextStyle(fontWeight: FontWeight.w800, color: Color(0xFF5A189A)),
+          ),
+          content: Text(
+            isBangla 
+                ? 'এই ফিচারটি পরবর্তী আপডেটে সক্রিয় করা হবে।' 
+                : 'This feature will be fully enabled in the upcoming update.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(isBangla ? 'ঠিক আছে' : 'OK', style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF5A189A))),
+            ),
+          ],
+        ),
+      );
     }
   }
 
