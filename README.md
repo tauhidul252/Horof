@@ -12,7 +12,7 @@
 
 ## 📸 Screenshot
 
-![Horof App Screenshot](assets/screenshot.jpg)
+<img src="assets/screenshot.jpg" width="300" alt="Horof App Screenshot">
 
 ## 🚀 Getting Started
 
