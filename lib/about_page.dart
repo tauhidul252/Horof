@@ -305,7 +305,33 @@ class _AboutPageState extends State<AboutPage> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(22),
-              child: Image.asset('assets/Horof.png', fit: BoxFit.cover),
+              child: Image.asset(
+                'assets/Horof.png',
+                fit: BoxFit.cover,
+                frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                  if (wasSynchronouslyLoaded) return child;
+                  return frame != null
+                      ? child
+                      : const Center(
+                          child: Text(
+                            'Loading...',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        );
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return const Center(
+                    child: Text(
+                      'Error',
+                      style: TextStyle(color: Colors.red, fontSize: 12),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
           const SizedBox(height: 16),

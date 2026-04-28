@@ -376,9 +376,12 @@ class _HorofHomePageState extends State<HorofHomePage> {
                   Expanded(
                     child: Directionality(
                       textDirection: TextDirection.rtl,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: GridView.builder(
+                      child: GridView.builder(
+                        padding: const EdgeInsets.only(
+                          left: 16.0,
+                          right: 16.0,
+                          bottom: 32.0,
+                        ),
                           physics: const BouncingScrollPhysics(),
                           gridDelegate:
                               const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -410,7 +413,6 @@ class _HorofHomePageState extends State<HorofHomePage> {
                             );
                           },
                         ),
-                      ),
                     ),
                   ),
                 ],
@@ -464,6 +466,29 @@ class _HorofHomePageState extends State<HorofHomePage> {
                         width: 70,
                         height: 70,
                         fit: BoxFit.cover,
+                        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                          if (wasSynchronouslyLoaded) return child;
+                          return frame != null
+                              ? child
+                              : const Center(
+                                  child: Text(
+                                    'Loading...',
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Center(
+                            child: Text(
+                              'Error',
+                              style: TextStyle(color: Colors.red, fontSize: 12),
+                            ),
+                          );
+                        },
                       ),
                     ),
                     const SizedBox(height: 12),
