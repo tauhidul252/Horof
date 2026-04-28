@@ -91,37 +91,110 @@ class _HorofHomePageState extends State<HorofHomePage> {
 
   Future<void> _rateApp() async {
     final isBangla = appLanguageBangla.value;
-    try {
-      final inAppReview = InAppReview.instance;
-      if (await inAppReview.isAvailable()) {
-        await inAppReview.requestReview();
-      } else {
-        await inAppReview.openStoreListing();
-      }
-    } catch (e) {
-      if (!mounted) return;
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Text(
-            isBangla ? 'শীঘ্রই আসছে' : 'Coming Soon',
-            style: const TextStyle(fontWeight: FontWeight.w800, color: Color(0xFF5A189A)),
-          ),
-          content: Text(
-            isBangla 
-                ? 'এই ফিচারটি পরবর্তী আপডেটে সক্রিয় করা হবে।' 
-                : 'This feature will be fully enabled in the upcoming update.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(isBangla ? 'ঠিক আছে' : 'OK', style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF5A189A))),
+    int selectedStars = 5;
+
+    await showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+            backgroundColor: Colors.white,
+            title: Text(
+              isBangla ? 'আপনার মতামত দিন' : 'Rate Horof',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontWeight: FontWeight.w900,
+                color: Color(0xFF5A189A),
+                fontSize: 22,
+              ),
             ),
-          ],
-        ),
-      );
-    }
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  isBangla
+                      ? 'অ্যাপটি আপনার কেমন লেগেছে? স্টার দিয়ে আমাদের জানান!'
+                      : 'How much do you like the app? Give us some stars!',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 16, color: Colors.black87),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(5, (index) {
+                    return IconButton(
+                      icon: Icon(
+                        index < selectedStars
+                            ? Icons.star_rounded
+                            : Icons.star_outline_rounded,
+                        color: const Color(0xFFFFD166),
+                        size: 40,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          selectedStars = index + 1;
+                        });
+                      },
+                    );
+                  }),
+                ),
+              ],
+            ),
+            actionsAlignment: MainAxisAlignment.center,
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  isBangla ? 'পরে' : 'Later',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[600],
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF5A189A),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                onPressed: () async {
+                  Navigator.pop(context);
+                  try {
+                    final inAppReview = InAppReview.instance;
+                    await inAppReview.openStoreListing();
+                  } catch (e) {
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          isBangla
+                              ? 'প্লে-স্টোর ওপেন করা যাচ্ছে না।'
+                              : 'Could not open Play Store.',
+                        ),
+                      ),
+                    );
+                  }
+                },
+                child: Text(
+                  isBangla ? 'রেট দিন' : 'Rate Now',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 
   @override
@@ -217,33 +290,36 @@ class _HorofHomePageState extends State<HorofHomePage> {
                                 ),
                               ],
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.star_rounded,
-                                  color: Color(0xFFFFD166),
-                                  size: 24,
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  isBangla
-                                      ? 'Horof - আরবি হরফ'
-                                      : 'Horof - Arabic',
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w900,
-                                    color: Color(0xFF5A189A),
-                                    letterSpacing: 0.5,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.star_rounded,
+                                    color: Color(0xFFFFD166),
+                                    size: 24,
                                   ),
-                                ),
-                                const SizedBox(width: 6),
-                                const Icon(
-                                  Icons.star_rounded,
-                                  color: Color(0xFFFFD166),
-                                  size: 24,
-                                ),
-                              ],
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    isBangla
+                                        ? 'Horof - আরবি হরফ'
+                                        : 'Horof - Arabic',
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w900,
+                                      color: Color(0xFF5A189A),
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  const Icon(
+                                    Icons.star_rounded,
+                                    color: Color(0xFFFFD166),
+                                    size: 24,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
