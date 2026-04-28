@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:in_app_review/in_app_review.dart';
+import 'package:flutter/foundation.dart';
+import 'about_page.dart';
+import 'privacy_policy_page.dart';
+import 'app_language.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,37 +42,37 @@ class HorofHomePage extends StatefulWidget {
 
 class _HorofHomePageState extends State<HorofHomePage> {
   // 30 Arabic Alphabets
-  final List<Map<String, String>> arabicAlphabets = [
-    {'ar': 'ا', 'bn': 'আলিফ'},
-    {'ar': 'ب', 'bn': 'বা'},
-    {'ar': 'ت', 'bn': 'তা'},
-    {'ar': 'ث', 'bn': 'ছা'},
-    {'ar': 'ج', 'bn': 'জীম'},
-    {'ar': 'ح', 'bn': 'হা'},
-    {'ar': 'خ', 'bn': 'খা'},
-    {'ar': 'د', 'bn': 'দাল'},
-    {'ar': 'ذ', 'bn': 'যাল'},
-    {'ar': 'ر', 'bn': 'র'},
-    {'ar': 'ز', 'bn': 'যা'},
-    {'ar': 'س', 'bn': 'সীন'},
-    {'ar': 'ش', 'bn': 'শীন'},
-    {'ar': 'ص', 'bn': 'সোয়াদ'},
-    {'ar': 'ض', 'bn': 'দোয়াদ'},
-    {'ar': 'ط', 'bn': 'তোয়া'},
-    {'ar': 'ظ', 'bn': 'যোয়া'},
-    {'ar': 'ع', 'bn': 'আইন'},
-    {'ar': 'غ', 'bn': 'গাইন'},
-    {'ar': 'ف', 'bn': 'ফা'},
-    {'ar': 'ق', 'bn': 'ক্বাফ'},
-    {'ar': 'ك', 'bn': 'কাফ'},
-    {'ar': 'ل', 'bn': 'লাম'},
-    {'ar': 'م', 'bn': 'মীম'},
-    {'ar': 'ن', 'bn': 'নুন'},
-    {'ar': 'و', 'bn': 'ওয়াও'},
-    {'ar': 'ه', 'bn': 'হা'},
-    {'ar': 'لا', 'bn': 'লাম আলিফ'},
-    {'ar': 'ء', 'bn': 'হামজা'},
-    {'ar': 'ي', 'bn': 'ইয়া'},
+  final List<Map<String, dynamic>> arabicAlphabets = [
+    {'ar': 'ا', 'bn': 'আলিফ', 'en': 'Alif'},
+    {'ar': 'ب', 'bn': 'বা', 'en': 'Ba'},
+    {'ar': 'ت', 'bn': 'তা', 'en': 'Ta'},
+    {'ar': 'ث', 'bn': 'ছা', 'en': 'Tha'},
+    {'ar': 'ج', 'bn': 'জীম', 'en': 'Jeem'},
+    {'ar': 'ح', 'bn': 'হা', 'en': 'Ha', 'audioName': 'ha'},
+    {'ar': 'خ', 'bn': 'খা', 'en': 'Kha'},
+    {'ar': 'د', 'bn': 'দাল', 'en': 'Dal'},
+    {'ar': 'ذ', 'bn': 'যাল', 'en': 'Thal'},
+    {'ar': 'ر', 'bn': 'র', 'en': 'Ra'},
+    {'ar': 'ز', 'bn': 'যা', 'en': 'Za'},
+    {'ar': 'س', 'bn': 'সীন', 'en': 'Seen'},
+    {'ar': 'ش', 'bn': 'শীন', 'en': 'Sheen'},
+    {'ar': 'ص', 'bn': 'সোয়াদ', 'en': 'Sad'},
+    {'ar': 'ض', 'bn': 'দোয়াদ', 'en': 'Dad'},
+    {'ar': 'ط', 'bn': 'তোয়া', 'en': 'Taa'},
+    {'ar': 'ظ', 'bn': 'যোয়া', 'en': 'Zaa'},
+    {'ar': 'ع', 'bn': 'আইন', 'en': 'Ain'},
+    {'ar': 'غ', 'bn': 'গাইন', 'en': 'Ghain'},
+    {'ar': 'ف', 'bn': 'ফা', 'en': 'Fa'},
+    {'ar': 'ق', 'bn': 'ক্বাফ', 'en': 'Qaf'},
+    {'ar': 'ك', 'bn': 'কাফ', 'en': 'Kaf'},
+    {'ar': 'ل', 'bn': 'লাম', 'en': 'Lam'},
+    {'ar': 'م', 'bn': 'মীম', 'en': 'Meem'},
+    {'ar': 'ن', 'bn': 'নুন', 'en': 'Noon'},
+    {'ar': 'و', 'bn': 'ওয়াও', 'en': 'Waw'},
+    {'ar': 'ه', 'bn': 'হা', 'en': 'Ha', 'audioName': 'haa'},
+    {'ar': 'لا', 'bn': 'লাম আলিফ', 'en': 'Lam Alif'},
+    {'ar': 'ء', 'bn': 'হামজা', 'en': 'Hamza'},
+    {'ar': 'ي', 'bn': 'ইয়া', 'en': 'Ya'},
   ];
 
   // Super vibrant color palette with dark shadows for 3D effect
@@ -82,10 +87,244 @@ class _HorofHomePageState extends State<HorofHomePage> {
     CardColorSet(const Color(0xFFEF476F), const Color(0xFF9E0059)), // Pink
   ];
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  Future<void> _rateApp() async {
+    if (kIsWeb) return; // in_app_review is not supported on web
+    final inAppReview = InAppReview.instance;
+    if (await inAppReview.isAvailable()) {
+      await inAppReview.requestReview();
+    } else {
+      await inAppReview.openStoreListing(appStoreId: '');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
+    return ValueListenableBuilder<bool>(
+      valueListenable: appLanguageBangla,
+      builder: (context, isBangla, _) {
+        return Scaffold(
+          key: _scaffoldKey,
+          drawer: _buildDrawer(context, isBangla),
+          bottomNavigationBar: Container(
+            height: 50,
+            decoration: const BoxDecoration(
+              color: Color(0xFFE0F7FA),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 10,
+                  offset: Offset(0, -4),
+                ),
+              ],
+            ),
+            child: const Center(
+              child: Text(
+                'A Product of Bangladesh 🇧🇩',
+                style: TextStyle(
+                  color: Color(0xFF5A189A),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+          ),
+          body: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFFE0F7FA), Color(0xFFF3E5F5)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: SafeArea(
+              child: Column(
+                children: [
+                  // Playful Custom Header
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16.0,
+                      horizontal: 16.0,
+                    ),
+                    child: Row(
+                      children: [
+                        // Menu Button
+                        GestureDetector(
+                          onTap: () => _scaffoldKey.currentState?.openDrawer(),
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(14),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 8,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons.menu_rounded,
+                              color: Color(0xFF5A189A),
+                              size: 26,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        // Title
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(30),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  offset: Offset(0, 4),
+                                  blurRadius: 10,
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.star_rounded,
+                                  color: Color(0xFFFFD166),
+                                  size: 24,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  isBangla
+                                      ? 'Horof - আরবি হরফ'
+                                      : 'Horof - Arabic',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w900,
+                                    color: Color(0xFF5A189A),
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                const Icon(
+                                  Icons.star_rounded,
+                                  color: Color(0xFFFFD166),
+                                  size: 24,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        // Language Switch Button
+                        GestureDetector(
+                          onTap: () {
+                            appLanguageBangla.value = !appLanguageBangla.value;
+                          },
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 250),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF5A189A), Color(0xFF9D4EDD)],
+                              ),
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 6,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.translate_rounded,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  isBangla ? 'EN' : 'BN',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Grid View
+                  Expanded(
+                    child: Directionality(
+                      textDirection: TextDirection.rtl,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: GridView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithMaxCrossAxisExtent(
+                                maxCrossAxisExtent: 130,
+                                crossAxisSpacing: 16,
+                                mainAxisSpacing:
+                                    20, // Extra main axis spacing for the 3D pop
+                                childAspectRatio: 0.85,
+                              ),
+                          itemCount: arabicAlphabets.length,
+                          itemBuilder: (context, index) {
+                            final alphabet = arabicAlphabets[index];
+                            final colorSet =
+                                cardColors[index % cardColors.length];
+                            return AlphabetCard(
+                              index: index,
+                              alphabet: alphabet['ar']!,
+                              pronunciation: isBangla
+                                  ? alphabet['bn']!
+                                  : alphabet['en']!,
+                              audioName:
+                                  alphabet['audioName'] ??
+                                  alphabet['en']
+                                      .toString()
+                                      .toLowerCase()
+                                      .replaceAll(' ', '_'),
+                              color: colorSet.base,
+                              shadowColor: colorSet.shadow,
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildDrawer(BuildContext context, bool isBangla) {
+    return Drawer(
+      backgroundColor: Colors.transparent,
+      child: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color(0xFFE0F7FA), Color(0xFFF3E5F5)],
@@ -96,72 +335,183 @@ class _HorofHomePageState extends State<HorofHomePage> {
         child: SafeArea(
           child: Column(
             children: [
-              // Playful Custom Header
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(0, 4),
-                        blurRadius: 10,
-                      )
-                    ],
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF5A189A), Color(0xFF9D4EDD)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Icon(Icons.star_rounded, color: Color(0xFFFFD166), size: 36),
-                      SizedBox(width: 12),
-                      Text(
-                        'Horof - আরবি হরফ',
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w900,
-                          color: Color(0xFF5A189A),
-                          letterSpacing: 1.0,
-                        ),
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 12,
+                      offset: Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Image.asset(
+                        'assets/Horof.png',
+                        width: 70,
+                        height: 70,
+                        fit: BoxFit.cover,
                       ),
-                      SizedBox(width: 12),
-                      Icon(Icons.star_rounded, color: Color(0xFFFFD166), size: 36),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Horof',
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      isBangla
+                          ? 'আরবি হরফ শেখার অ্যাপ'
+                          : 'Arabic Alphabet Learning App',
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              
-              // Grid View
-              Expanded(
-                child: Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: GridView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 130,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 20, // Extra main axis spacing for the 3D pop
-                        childAspectRatio: 0.85,
-                      ),
-                      itemCount: arabicAlphabets.length,
-                      itemBuilder: (context, index) {
-                        final alphabet = arabicAlphabets[index];
-                        final colorSet = cardColors[index % cardColors.length];
-                        return AlphabetCard(
-                          index: index,
-                          alphabet: alphabet['ar']!,
-                          pronunciation: alphabet['bn']!,
-                          color: colorSet.base,
-                          shadowColor: colorSet.shadow,
-                        );
-                      },
+              const SizedBox(height: 8),
+              _buildDrawerItem(
+                icon: Icons.star_rounded,
+                iconColor: const Color(0xFFFFD166),
+                label: isBangla ? 'অ্যাপ রেটিং দিন ⭐' : 'Rate App ⭐',
+                onTap: () {
+                  Navigator.pop(context);
+                  _rateApp();
+                },
+              ),
+              _buildDrawerItem(
+                icon: Icons.info_rounded,
+                iconColor: const Color(0xFF118AB2),
+                label: isBangla ? 'অ্যাপ সম্পর্কে' : 'About App',
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const AboutPage()),
+                  );
+                },
+              ),
+              _buildDrawerItem(
+                icon: Icons.shield_rounded,
+                iconColor: const Color(0xFF06D6A0),
+                label: isBangla ? 'প্রাইভেসি পলিসি' : 'Privacy Policy',
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const PrivacyPolicyPage(),
                     ),
-                  ),
+                  );
+                },
+              ),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(
+                  isBangla
+                      ? '© ${DateTime.now().year} Horof. সর্বস্বত্ব সংরক্ষিত।'
+                      : '© ${DateTime.now().year} Horof. All Rights Reserved.',
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
+                  textAlign: TextAlign.center,
                 ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomBarItem({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: Colors.white, size: 24),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDrawerItem({
+    required IconData icon,
+    required Color iconColor,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 6,
+                offset: Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: iconColor.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: iconColor, size: 22),
+              ),
+              const SizedBox(width: 14),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF333333),
+                ),
+              ),
+              const Spacer(),
+              const Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 14,
+                color: Colors.grey,
               ),
             ],
           ),
@@ -175,6 +525,7 @@ class AlphabetCard extends StatefulWidget {
   final int index;
   final String alphabet;
   final String pronunciation;
+  final String audioName;
   final Color color;
   final Color shadowColor;
 
@@ -183,6 +534,7 @@ class AlphabetCard extends StatefulWidget {
     required this.index,
     required this.alphabet,
     required this.pronunciation,
+    required this.audioName,
     required this.color,
     required this.shadowColor,
   });
@@ -210,8 +562,8 @@ class _AlphabetCardState extends State<AlphabetCard> {
 
   void _playSound() async {
     try {
-      // Create a new instance for rapid tapping, or reuse existing one
-      await _audioPlayer.play(AssetSource('audio/letter_${widget.index}.mp3'));
+      print("Playing asset: audio/${widget.audioName}.mp3");
+      await _audioPlayer.play(AssetSource('audio/${widget.audioName}.mp3'));
     } catch (e) {
       print("Audio Error: $e");
     }
@@ -268,7 +620,6 @@ class _AlphabetCardState extends State<AlphabetCard> {
                   ),
                 ],
               ),
-              textDirection: TextDirection.rtl,
             ),
             const SizedBox(height: 12),
             Container(
@@ -282,7 +633,7 @@ class _AlphabetCardState extends State<AlphabetCard> {
                     color: Colors.black12,
                     offset: Offset(0, 2),
                     blurRadius: 2,
-                  )
+                  ),
                 ],
               ),
               child: FittedBox(
@@ -293,7 +644,8 @@ class _AlphabetCardState extends State<AlphabetCard> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
-                    color: widget.shadowColor, // Harmonize text with the card's 3D shadow
+                    color: widget
+                        .shadowColor, // Harmonize text with the card's 3D shadow
                   ),
                 ),
               ),
