@@ -425,50 +425,56 @@ class _AboutPageState extends State<AboutPage> {
               color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  Icons.verified_rounded,
-                  color: Colors.white,
-                  size: 18,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  appLanguageBangla.value
-                      ? 'ভার্সন $_version  •  বিনামূল্যে  •  বিজ্ঞাপনমুক্ত'
-                      : 'Version $_version  •  Free  •  Ad-Free',
-                  style: const TextStyle(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.verified_rounded,
                     color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
+                    size: 18,
                   ),
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  Text(
+                    appLanguageBangla.value
+                        ? 'ভার্সন $_version  •  বিনামূল্যে  •  বিজ্ঞাপনমুক্ত'
+                        : 'Version $_version  •  Free  •  Ad-Free',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 12),
           // Stats Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildStatChip(
-                icon: Icons.menu_book_rounded,
-                label: appLanguageBangla.value ? '৩০ হরফ' : '30 Letters',
-              ),
-              _buildStatChip(
-                icon: Icons.volume_up_rounded,
-                label: appLanguageBangla.value ? 'অডিও' : 'Audio',
-              ),
-              _buildStatChip(
-                icon: Icons.wifi_off_rounded,
-                label: appLanguageBangla.value ? 'অফলাইন' : 'Offline',
-              ),
-              _buildStatChip(
-                icon: Icons.child_care_rounded,
-                label: appLanguageBangla.value ? 'বয়স ৩+' : 'Age 3+',
-              ),
-            ],
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildStatChip(
+                  icon: Icons.menu_book_rounded,
+                  label: appLanguageBangla.value ? '৩০ হরফ' : '30 Letters',
+                ),
+                _buildStatChip(
+                  icon: Icons.volume_up_rounded,
+                  label: appLanguageBangla.value ? 'অডিও' : 'Audio',
+                ),
+                _buildStatChip(
+                  icon: Icons.wifi_off_rounded,
+                  label: appLanguageBangla.value ? 'অফলাইন' : 'Offline',
+                ),
+                _buildStatChip(
+                  icon: Icons.child_care_rounded,
+                  label: appLanguageBangla.value ? 'বয়স ৩+' : 'Age 3+',
+                ),
+              ],
+            ),
           ),
         ],
       ),

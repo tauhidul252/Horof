@@ -119,24 +119,27 @@ class _HorofHomePageState extends State<HorofHomePage> {
                   style: const TextStyle(fontSize: 16, color: Colors.black87),
                 ),
                 const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(5, (index) {
-                    return IconButton(
-                      icon: Icon(
-                        index < selectedStars
-                            ? Icons.star_rounded
-                            : Icons.star_outline_rounded,
-                        color: const Color(0xFFFFD166),
-                        size: 40,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          selectedStars = index + 1;
-                        });
-                      },
-                    );
-                  }),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(5, (index) {
+                      return IconButton(
+                        icon: Icon(
+                          index < selectedStars
+                              ? Icons.star_rounded
+                              : Icons.star_outline_rounded,
+                          color: const Color(0xFFFFD166),
+                          size: 40,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            selectedStars = index + 1;
+                          });
+                        },
+                      );
+                    }),
+                  ),
                 ),
               ],
             ),
