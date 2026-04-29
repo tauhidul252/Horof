@@ -233,6 +233,8 @@ class _HorofHomePageState extends State<HorofHomePage> {
             ),
           ),
           body: Container(
+            width: double.infinity,
+            height: double.infinity,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [Color(0xFFE0F7FA), Color(0xFFF3E5F5)],
@@ -241,8 +243,10 @@ class _HorofHomePageState extends State<HorofHomePage> {
               ),
             ),
             child: SafeArea(
-              child: Column(
-                children: [
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  children: [
                   // Playful Custom Header
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -376,51 +380,51 @@ class _HorofHomePageState extends State<HorofHomePage> {
                   ),
 
                   // Grid View
-                  Expanded(
-                    child: Directionality(
-                      textDirection: TextDirection.rtl,
-                      child: GridView.builder(
-                        padding: const EdgeInsets.only(
-                          left: 16.0,
-                          right: 16.0,
-                          bottom: 32.0,
-                        ),
-                          physics: const BouncingScrollPhysics(),
-                          gridDelegate:
-                              const SliverGridDelegateWithMaxCrossAxisExtent(
-                                maxCrossAxisExtent: 130,
-                                crossAxisSpacing: 16,
-                                mainAxisSpacing:
-                                    20, // Extra main axis spacing for the 3D pop
-                                childAspectRatio: 0.85,
-                              ),
-                          itemCount: arabicAlphabets.length,
-                          itemBuilder: (context, index) {
-                            final alphabet = arabicAlphabets[index];
-                            final colorSet =
-                                cardColors[index % cardColors.length];
-                            return AlphabetCard(
-                              index: index,
-                              alphabet: alphabet['ar']!,
-                              pronunciation: isBangla
-                                  ? alphabet['bn']!
-                                  : alphabet['en']!,
-                              audioName:
-                                  alphabet['audioName'] ??
-                                  alphabet['en']
-                                      .toString()
-                                      .toLowerCase()
-                                      .replaceAll(' ', '_'),
-                              color: colorSet.base,
-                              shadowColor: colorSet.shadow,
-                            );
-                          },
-                        ),
+                  Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.only(
+                        left: 16.0,
+                        right: 16.0,
+                        bottom: 32.0,
+                      ),
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 130,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing:
+                                20, // Extra main axis spacing for the 3D pop
+                            childAspectRatio: 0.85,
+                          ),
+                      itemCount: arabicAlphabets.length,
+                      itemBuilder: (context, index) {
+                        final alphabet = arabicAlphabets[index];
+                        final colorSet =
+                            cardColors[index % cardColors.length];
+                        return AlphabetCard(
+                          index: index,
+                          alphabet: alphabet['ar']!,
+                          pronunciation: isBangla
+                              ? alphabet['bn']!
+                              : alphabet['en']!,
+                          audioName:
+                              alphabet['audioName'] ??
+                              alphabet['en']
+                                  .toString()
+                                  .toLowerCase()
+                                  .replaceAll(' ', '_'),
+                          color: colorSet.base,
+                          shadowColor: colorSet.shadow,
+                        );
+                      },
                     ),
                   ),
                 ],
               ),
             ),
+          ),
           ),
         );
       },
@@ -439,127 +443,134 @@ class _HorofHomePageState extends State<HorofHomePage> {
           ),
         ),
         child: SafeArea(
-          child: Column(
-            children: [
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.all(16),
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF5A189A), Color(0xFF9D4EDD)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 12,
-                      offset: Offset(0, 6),
-                    ),
-                  ],
-                ),
+          child: CustomScrollView(
+            slivers: [
+              SliverFillRemaining(
+                hasScrollBody: false,
                 child: Column(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: Image.asset(
-                        'assets/Horof.png',
-                        width: 70,
-                        height: 70,
-                        fit: BoxFit.cover,
-                        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                          if (wasSynchronouslyLoaded) return child;
-                          return frame != null
-                              ? child
-                              : const Center(
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF5A189A), Color(0xFF9D4EDD)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 12,
+                            offset: Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: Image.asset(
+                              'assets/Horof.png',
+                              width: 70,
+                              height: 70,
+                              fit: BoxFit.cover,
+                              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                                if (wasSynchronouslyLoaded) return child;
+                                return frame != null
+                                    ? child
+                                    : const Center(
+                                        child: Text(
+                                          'Loading...',
+                                          style: TextStyle(
+                                            color: Colors.white70,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      );
+                              },
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Center(
                                   child: Text(
-                                    'Loading...',
-                                    style: TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    'Error',
+                                    style: TextStyle(color: Colors.red, fontSize: 12),
                                   ),
                                 );
-                        },
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Center(
-                            child: Text(
-                              'Error',
-                              style: TextStyle(color: Colors.red, fontSize: 12),
+                              },
                             ),
-                          );
-                        },
+                          ),
+                          const SizedBox(height: 12),
+                          const Text(
+                            'Horof',
+                            style: TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            isBangla
+                                ? 'আরবি হরফ শেখার অ্যাপ'
+                                : 'Arabic Alphabet Learning App',
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    const Text(
-                      'Horof',
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                      ),
+                    const SizedBox(height: 8),
+                    _buildDrawerItem(
+                      icon: Icons.star_rounded,
+                      iconColor: const Color(0xFFFFD166),
+                      label: isBangla ? 'অ্যাপ রেটিং দিন ⭐' : 'Rate App ⭐',
+                      onTap: () {
+                        Navigator.pop(context);
+                        _rateApp();
+                      },
                     ),
-                    Text(
-                      isBangla
-                          ? 'আরবি হরফ শেখার অ্যাপ'
-                          : 'Arabic Alphabet Learning App',
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 13,
+                    _buildDrawerItem(
+                      icon: Icons.info_rounded,
+                      iconColor: const Color(0xFF118AB2),
+                      label: isBangla ? 'অ্যাপ সম্পর্কে' : 'About App',
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const AboutPage()),
+                        );
+                      },
+                    ),
+                    _buildDrawerItem(
+                      icon: Icons.shield_rounded,
+                      iconColor: const Color(0xFF06D6A0),
+                      label: isBangla ? 'প্রাইভেসি পলিসি' : 'Privacy Policy',
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const PrivacyPolicyPage(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        isBangla
+                            ? '© ${DateTime.now().year} Horof. সর্বস্বত্ব সংরক্ষিত।'
+                            : '© ${DateTime.now().year} Horof. All Rights Reserved.',
+                        style: const TextStyle(color: Colors.grey, fontSize: 12),
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ],
-                ),
-              ),
-              const SizedBox(height: 8),
-              _buildDrawerItem(
-                icon: Icons.star_rounded,
-                iconColor: const Color(0xFFFFD166),
-                label: isBangla ? 'অ্যাপ রেটিং দিন ⭐' : 'Rate App ⭐',
-                onTap: () {
-                  Navigator.pop(context);
-                  _rateApp();
-                },
-              ),
-              _buildDrawerItem(
-                icon: Icons.info_rounded,
-                iconColor: const Color(0xFF118AB2),
-                label: isBangla ? 'অ্যাপ সম্পর্কে' : 'About App',
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const AboutPage()),
-                  );
-                },
-              ),
-              _buildDrawerItem(
-                icon: Icons.shield_rounded,
-                iconColor: const Color(0xFF06D6A0),
-                label: isBangla ? 'প্রাইভেসি পলিসি' : 'Privacy Policy',
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const PrivacyPolicyPage(),
-                    ),
-                  );
-                },
-              ),
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(
-                  isBangla
-                      ? '© ${DateTime.now().year} Horof. সর্বস্বত্ব সংরক্ষিত।'
-                      : '© ${DateTime.now().year} Horof. All Rights Reserved.',
-                  style: const TextStyle(color: Colors.grey, fontSize: 12),
-                  textAlign: TextAlign.center,
                 ),
               ),
             ],
@@ -603,15 +614,16 @@ class _HorofHomePageState extends State<HorofHomePage> {
                 child: Icon(icon, color: iconColor, size: 22),
               ),
               const SizedBox(width: 14),
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF333333),
+              Expanded(
+                child: Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF333333),
+                  ),
                 ),
               ),
-              const Spacer(),
               const Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: 14,

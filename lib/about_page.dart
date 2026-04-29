@@ -461,14 +461,17 @@ class _AboutPageState extends State<AboutPage> {
                   icon: Icons.menu_book_rounded,
                   label: appLanguageBangla.value ? '৩০ হরফ' : '30 Letters',
                 ),
+                const SizedBox(width: 12),
                 _buildStatChip(
                   icon: Icons.volume_up_rounded,
                   label: appLanguageBangla.value ? 'অডিও' : 'Audio',
                 ),
+                const SizedBox(width: 12),
                 _buildStatChip(
                   icon: Icons.wifi_off_rounded,
                   label: appLanguageBangla.value ? 'অফলাইন' : 'Offline',
                 ),
+                const SizedBox(width: 12),
                 _buildStatChip(
                   icon: Icons.child_care_rounded,
                   label: appLanguageBangla.value ? 'বয়স ৩+' : 'Age 3+',
