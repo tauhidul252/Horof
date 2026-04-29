@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:in_app_review/in_app_review.dart';
-import 'package:flutter/foundation.dart';
 import 'about_page.dart';
 import 'privacy_policy_page.dart';
 import 'app_language.dart';
@@ -165,13 +164,14 @@ class _HorofHomePageState extends State<HorofHomePage> {
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
                 onPressed: () async {
+                  final messenger = ScaffoldMessenger.of(context);
                   Navigator.pop(context);
                   try {
                     final inAppReview = InAppReview.instance;
                     await inAppReview.openStoreListing();
                   } catch (e) {
                     if (!mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    messenger.showSnackBar(
                       SnackBar(
                         content: Text(
                           isBangla
@@ -566,31 +566,6 @@ class _HorofHomePageState extends State<HorofHomePage> {
     );
   }
 
-  Widget _buildBottomBarItem({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: Colors.white, size: 24),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildDrawerItem({
     required IconData icon,
     required Color iconColor,
@@ -688,10 +663,10 @@ class _AlphabetCardState extends State<AlphabetCard> {
 
   void _playSound() async {
     try {
-      print("Playing asset: audio/${widget.audioName}.mp3");
+      debugPrint("Playing asset: audio/${widget.audioName}.mp3");
       await _audioPlayer.play(AssetSource('audio/${widget.audioName}.mp3'));
     } catch (e) {
-      print("Audio Error: $e");
+      debugPrint("Audio Error: $e");
     }
   }
 
